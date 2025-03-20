@@ -1,0 +1,2 @@
+Hey there!
+This file is for testing encryption and decrytion in clod kms

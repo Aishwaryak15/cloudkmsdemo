@@ -1,0 +1,40 @@
+name: Encrypt/Decrypt with Google Cloud KMS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  encrypt-decrypt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: YOUR_PROJECT_ID
+          credentials_json: ${{ secrets.GCP_OAUTH_TOKEN }}  # OAuth token stored in secrets
+
+      - name: Encrypt a file using Cloud KMS
+        run: |
+          echo "SensitiveDataToEncrypt" > sensitive_data.txt
+          gcloud kms encrypt \
+            --location global \
+            --keyring my-key-ring \
+            --key my-encryption-key \
+            --plaintext-file sensitive_data.txt \
+            --ciphertext-file encrypted_data.txt
+
+      - name: Decrypt the file
+        run: |
+          gcloud kms decrypt \
+            --location global \
+            --keyring my-key-ring \
+            --key my-encryption-key \
+            --ciphertext-file encrypted_data.txt \
+            --plaintext-file decrypted_data.txt
+          cat decrypted_data.txt

@@ -16,7 +16,7 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
         with:
-          project_id: YOUR_PROJECT_ID
+          project_id: cicdgithubactions
           credentials_json: ${{ secrets.GCP_OAUTH_TOKEN }}  # OAuth token stored in secrets
 
       - name: Encrypt a file using Cloud KMS
@@ -24,17 +24,17 @@ jobs:
           echo "SensitiveDataToEncrypt" > sensitive_data.txt
           gcloud kms encrypt \
             --location global \
-            --keyring my-key-ring \
-            --key my-encryption-key \
-            --plaintext-file sensitive_data.txt \
-            --ciphertext-file encrypted_data.txt
+            --keyring my-key \
+            --key my-first-key \
+            --plaintext-file test.txt \
+            --ciphertext-file encrypt.txt
 
       - name: Decrypt the file
         run: |
           gcloud kms decrypt \
             --location global \
-            --keyring my-key-ring \
-            --key my-encryption-key \
-            --ciphertext-file encrypted_data.txt \
-            --plaintext-file decrypted_data.txt
+            --keyring my-key \
+            --key my-first-key \
+            --ciphertext-file encrypt.txt \
+            --plaintext-file decrypt.txt
           cat decrypted_data.txt

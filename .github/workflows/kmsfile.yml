@@ -1,4 +1,4 @@
-name: Encrypt/Decrypt with Google Cloud KMS
+name: Upload File to Google Cloud Storage
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  encrypt-decrypt:
+  upload-to-cloudshell:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,30 +19,12 @@ jobs:
           project_id: cicdgithubactions  # Replace with your actual project ID
           credentials_json: ${{ secrets.GCP_OAUTH_TOKEN }}  # Service account JSON key stored in GitHub secrets
 
-      - name: Encrypt a file using Cloud KMS
+      - name: Upload test.txt to Google Cloud Storage
         run: |
-          echo "SensitiveDataToEncrypt" > sensitive_data.txt
-          gcloud kms encrypt \
-            --location global \
-            --keyring my-key \
-            --key my-first-key \
-            --plaintext-file sensitive_data.txt \
-            --ciphertext-file encrypt.txt
+          # Ensure gsutil is authenticated with the credentials
+          echo "Uploading test.txt to Cloud Storage..."
+          gsutil cp test.txt gs://your-bucket-name/test.txt  # Replace with your bucket name
 
-      - name: Decrypt the file
+      - name: Confirm upload
         run: |
-          gcloud kms decrypt \
-            --location global \
-            --keyring my-key \
-            --key my-first-key \
-            --ciphertext-file encrypt.txt \
-            --plaintext-file decrypted_data.txt
-          cat decrypted_data.txt
-
-      - name: Upload encrypted and decrypted files as artifacts
-        uses: actions/upload-artifact@v2  # Use v2 instead of v3
-        with:
-          name: encrypted-and-decrypted-files
-          path: |
-            encrypt.txt
-            decrypted_data.txt
+          gsutil ls gs://your-bucket-name/  # List files in the bucket to confirm upload

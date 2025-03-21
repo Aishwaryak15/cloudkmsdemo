@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/auth@v2
@@ -40,7 +40,7 @@ jobs:
           cat decrypted_data.txt
 
       - name: Upload encrypted and decrypted files as artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2  # Use v2 instead of v3
         with:
           name: encrypted-and-decrypted-files
           path: |
